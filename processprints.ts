@@ -9,6 +9,8 @@ const prints = JSON.parse(await Deno.readTextFile("forests.json"));
 const sortedPrints = prints.toSorted((a,b) => {
   const dateDiff = +new Date(a.released_at) - +new Date(b.released_at);
   if(dateDiff !== 0) return dateDiff;
+  const setDiff = a.set.localeCompare(b.set)
+  if(setDiff !== 0) return setDiff;
   return a.collector_number - b.collector_number;
 });
 let i =0;
