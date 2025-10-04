@@ -1,0 +1,22 @@
+@media screen {
+  
+  .print {
+  border: 1px solid black;
+  }
+}
+.prints {
+  display: grid;
+  grid-template-columns: 25% 25% 25% 25%;
+  width: 1024px;
+  margin: 0px auto;
+}
+.print {
+  text-align:center;
+  padding:12px;
+}
+
+@media print {
+  .print {
+    filter: grayscale(1);
+  }
+}
