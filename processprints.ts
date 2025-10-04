@@ -7,7 +7,9 @@ function toCardId(c: Card) {
 const prints = JSON.parse(await Deno.readTextFile("forests.json"));
 
 const sortedPrints = prints.toSorted((a,b) => {
-  return +new Date(a.released_at) - +new Date(b.released_at);
+  const dateDiff = +new Date(a.released_at) - +new Date(b.released_at);
+  if(dateDiff !== 0) return dateDiff;
+  return a.collector_number - b.collector_number;
 });
 let i =0;
 const htmls: string[] = [];
