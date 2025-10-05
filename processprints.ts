@@ -6,7 +6,8 @@ function toCardId(c: Card) {
 function shortenSetName(s: string) {
   return s
     .replace("World Championship Decks", "World Champ. Deck")
-    .replace("Fourth Edition Foreign Black Border", "4th Ed. Foreign Black Border");
+    .replace("Fourth Edition Foreign Black Border", "4th Ed. Foreign Black Border")
+    .replace("The Lord of the Rings", "Lord of the Rings");
 }
 
 const prints = JSON.parse(await Deno.readTextFile("forests.json"));
