@@ -7,7 +7,8 @@ function shortenSetName(s: string) {
   return s
     .replace("World Championship Decks", "World Champ. Deck")
     .replace("Fourth Edition Foreign Black Border", "4th Ed. Foreign Black Border")
-    .replace("The Lord of the Rings", "Lord of the Rings");
+    .replace("The Lord of the Rings", "LotR")
+    .replace("Commander Legends:", "CL:");
 }
 
 const prints = JSON.parse(await Deno.readTextFile("forests.json"));
