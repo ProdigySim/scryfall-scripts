@@ -34,7 +34,7 @@ for(const print of sortedPrints) {
         <div class="num">${i.toString(10).padStart(4, "0")}</div>
         <img class="front" src="${image}" />
         <div class="name">${set_name}</div>
-        <div class="set">${finish === 'foil' ? 'FOIL ' : ''} ${toCardId(print)}</div>
+        <div class="set">${finish === 'nonfoil' ? '' : `${finish.toUpperCase()} `}${toCardId(print)}</div>
         <div class="date">${released_at}</div>
       </div>
       `;
@@ -48,6 +48,7 @@ const text = `
 <html lang="en">
 <head>
   <link rel="stylesheet" href="index.css" />
+  <link rel="icon" type="image/png" href="favicon.png" />
   <title>Forests</title>
 </head>
 <body>
