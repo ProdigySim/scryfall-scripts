@@ -3,6 +3,11 @@ import type { Card } from 'npm:scryfall-api';
 function toCardId(c: Card) {
   return `${c.set.toUpperCase()} ${c.collector_number}`;
 }
+function shortenSetName(s: string) {
+  return s
+    .replace("World Championship Decks", "World Champ. Deck")
+    .replace("Fourth Edition Foreign Black Border", "4th Ed. Foreign Black Border");
+}
 
 const prints = JSON.parse(await Deno.readTextFile("forests.json"));
 
@@ -27,13 +32,13 @@ for(const print of sortedPrints) {
   } = print;
 
   if(lang != "en") console.log(`Non-English: ${set_name} ${toCardId(print)}`);
-  const image = image_uris ? image_uris.small : print.card_faces?.[0]?.image_uris?.small;
+  const image = image_uris ? image_uris.normal : print.card_faces?.[0]?.image_uris?.normal;
   for(const finish of finishes) {
     const html = `
       <div class='print' id='${i}'>
         <div class="num">${i.toString(10).padStart(4, "0")}</div>
         <img class="front" src="${image}" />
-        <div class="name">${set_name}</div>
+        <div class="name">${shortenSetName(set_name)}</div>
         <div class="set">${finish === 'nonfoil' ? '' : `${finish.toUpperCase()} `}${toCardId(print)}</div>
         <div class="date">${released_at}</div>
       </div>

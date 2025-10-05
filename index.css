@@ -1,7 +1,6 @@
 @media screen {
-  
   .print {
-  border: 1px solid black;
+    border: 1px solid black;
   }
 }
 .prints {
@@ -12,11 +11,22 @@
 }
 .print {
   text-align:center;
-  padding:12px;
+  margin: 8px auto;
+}
+
+.print img {
+  width: 70%;
+  border-radius: 8px;
 }
 
 @media print {
+
   .print {
-    filter: grayscale(1);
+    padding: 0 8px;
+    break-inside:avoid;
+  }
+  .prints {
+    grid-template-columns: 33% 33% 33%;
+    width: 100%;
   }
 }
