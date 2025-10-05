@@ -1,14 +1,18 @@
 import type { Card } from 'npm:scryfall-api';
 
 function toCardId(c: Card) {
-  return `${c.set.toUpperCase()} ${c.collector_number}`;
+  const collNumFixed = c.collector_number.replace("★", "");
+  return `${c.set.toUpperCase()} ${collNumFixed}`;
 }
 function shortenSetName(s: string) {
   return s
     .replace("World Championship Decks", "World Champ. Deck")
     .replace("Fourth Edition Foreign Black Border", "4th Ed. Foreign Black Border")
     .replace("The Lord of the Rings", "LotR")
-    .replace("Commander Legends:", "CL:");
+    .replace("Commander Legends:", "CL:")
+    .replace("Global Series", "G.S.")
+    .replace("Duel Decks:", "DD:")
+    .replace("Duel Decks Anthology:", "DDA:");
 }
 
 const prints = JSON.parse(await Deno.readTextFile("forests.json"));
