@@ -26,9 +26,13 @@
   border: 1px dotted black;
   width: 600px;
   margin: 10px auto;
+  padding: 12px;
+  text-align:center;
+}
+
+.clipboardbtns {
   display: flex;
   justify-content: center;
-  padding: 12px;
 }
 
 button {
@@ -37,7 +41,7 @@ button {
   padding: 12px;
   border-radius: 0;
   background-color: rgba(10, 20, 200, 0.7);
-  margin: 0 8px;
+  margin: 10px 8px;
 }
 
 button.activated {

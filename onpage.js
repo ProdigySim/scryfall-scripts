@@ -24,6 +24,11 @@ function saveToLocalStorage() {
   }));
 }
 
+const totalPrints = document.querySelectorAll('.print').length;
+
+function updateStatus() {
+  document.querySelector('.status').textContent = `Collected: ${currentCollection.size} Remaining: ${totalPrints - currentCollection.size}`;
+}
 const printMap = Array.from(document.querySelectorAll('.print')).map((p) => {
   const id = getId(p);
   if(currentCollection.has(id)) {
@@ -41,11 +46,13 @@ const printMap = Array.from(document.querySelectorAll('.print')).map((p) => {
 function addToCollection(id) {
   currentCollection.add(id);
   printMap.get(id)?.element.classList.add("collected");
+  updateStatus();
   saveToLocalStorage();
 }
 function removeFromCollection(id) {
   currentCollection.delete(id);
   printMap.get(id)?.element.classList.remove("collected");
+  updateStatus();
   saveToLocalStorage();
 }
 document.querySelector(".prints").addEventListener("click", (e) => {
@@ -74,7 +81,7 @@ function loadCollection(collection) {
     }
   }
 }
-
+updateStatus();
 document.getElementById('cc').addEventListener("click", () => {
   navigator.clipboard.writeText(JSON.stringify(Array.from(currentCollection)));
 });
