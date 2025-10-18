@@ -1,4 +1,5 @@
 import type { Card } from 'npm:scryfall-api';
+import { loadCards } from './utils.ts';
 
 function toCardId(c: Card) {
   const collNumFixed = c.collector_number.replace("★", "");
@@ -15,14 +16,18 @@ function shortenSetName(s: string) {
     .replace("Duel Decks Anthology:", "DDA:");
 }
 
-const prints = JSON.parse(await Deno.readTextFile("forests.json"));
+function dateFmt(released_at: Date) {
+  const [m,d,y] = released_at.toLocaleDateString().split('/').map(n => n.padStart(2, "0"));
+  return [y,m,d].join('-');
+}
 
+const prints = await loadCards("forests.json");
 const sortedPrints = prints.toSorted((a,b) => {
-  const dateDiff = +new Date(a.released_at) - +new Date(b.released_at);
+  const dateDiff = +a.released_at - +b.released_at;
   if(dateDiff !== 0) return dateDiff;
   const setDiff = a.set.localeCompare(b.set)
   if(setDiff !== 0) return setDiff;
-  return a.collector_number - b.collector_number;
+  return a.collector_number.localeCompare(b.collector_number);
 });
 let i =0;
 const htmls: string[] = [];
@@ -32,8 +37,6 @@ for(const print of sortedPrints) {
     lang,
     image_uris,
     finishes,
-    collector_number,
-    set,
     set_name,
   } = print;
 
@@ -46,7 +49,7 @@ for(const print of sortedPrints) {
         <img class="front" src="${image}" />
         <div class="name">${shortenSetName(set_name)}</div>
         <div class="set">${finish === 'nonfoil' ? '' : `${finish.toUpperCase()} `}${toCardId(print)}</div>
-        <div class="date">${released_at}</div>
+        <div class="date">${dateFmt(released_at)}</div>
       </div>
       `;
     htmls.push(html);

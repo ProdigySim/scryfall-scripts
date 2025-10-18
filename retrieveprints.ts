@@ -8,23 +8,18 @@ function delay(ms: number) {
   });
 }
 
-async function fetchJson<T>(url: string): Promise<T> {
-  const res = await fetch(url);
-  return res.json();
-}
-
-async function *fetchPrints(initialUrl: string) {
-  let nextUrl = initialUrl;
-  let next;
+async function *fetchPrints(search: string) {
+  const sres = Cards.search(search, { unique: 'prints', include_extras: true, include_variations: true});
+  let cur ;
   let sum = 0;
   do {
-    next = await fetchJson<List<Card>>(nextUrl);
-    yield * next.data;
-    sum+= next.data.length;
-    nextUrl = next.next_page;
-    console.log(`Fetching next page ${sum}/${next.total_cards}`)
-    if(sum > next.total_cards) throw new Error("too many cards");
-  } while (next.has_more);
+    cur = await sres.next();
+    yield * cur;
+    sum+= cur.length;
+    console.log(`Fetching next page ${sum}/${sres.count}`)
+    if(sum > sres.count) throw new Error("too many cards");
+    await delay(500);
+  } while (sres.hasMore);
 }
 
 interface List<T> {
@@ -34,15 +29,14 @@ interface List<T> {
   next_page: string;
   data: Array<T>;
 }
-const ForestCard = await Cards.byName("Forest");
-const SnowForestCard = await Cards.byName("Snow-Covered Forest");
 
 const prints: Card[] = [];
-for await ( const print of fetchPrints(ForestCard!.prints_search_uri)) {
+for await ( const print of fetchPrints("!\"Forest\" include:extras -layout:art_series game:paper")) {
   prints.push(print);
 }
+
 console.log("Received:", prints.length);
-for await ( const print of fetchPrints(SnowForestCard!.prints_search_uri)) {
+for await ( const print of fetchPrints("!\"Snow-Covered Forest\" include:extras -layout:art_series  game:paper")) {
   prints.push(print);
 }
 console.log("Received:", prints.length);
