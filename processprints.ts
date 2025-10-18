@@ -1,5 +1,6 @@
 import type { Card } from 'npm:scryfall-api';
 import { loadCards } from './utils.ts';
+import { sortCards } from './sortCards.ts';
 
 function toCardId(c: Card) {
   const collNumFixed = c.collector_number.replace("★", "");
@@ -17,18 +18,11 @@ function shortenSetName(s: string) {
 }
 
 function dateFmt(released_at: Date) {
-  const [m,d,y] = released_at.toLocaleDateString().split('/').map(n => n.padStart(2, "0"));
-  return [y,m,d].join('-');
+  return released_at.toISOString().split('T')[0];
 }
 
 const prints = await loadCards("forests.json");
-const sortedPrints = prints.toSorted((a,b) => {
-  const dateDiff = +a.released_at - +b.released_at;
-  if(dateDiff !== 0) return dateDiff;
-  const setDiff = a.set.localeCompare(b.set)
-  if(setDiff !== 0) return setDiff;
-  return a.collector_number.localeCompare(b.collector_number);
-});
+const sortedPrints = prints.toSorted(sortCards);
 let i =0;
 const htmls: string[] = [];
 for(const print of sortedPrints) {
