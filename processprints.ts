@@ -33,6 +33,7 @@ let i =0;
 const htmls: string[] = [];
 for(const print of sortedPrints) {
   const {
+    id,
     released_at,
     lang,
     image_uris,
@@ -44,7 +45,7 @@ for(const print of sortedPrints) {
   const image = image_uris ? image_uris.normal : print.card_faces?.[0]?.image_uris?.normal;
   for(const finish of finishes) {
     const html = `
-      <div class='print' id='${i}'>
+      <div class='print' id='${i}' data-scryfall-id="${id}" data-finish="${finish}">
         <div class="num">${i.toString(10).padStart(4, "0")}</div>
         <img class="front" src="${image}" />
         <div class="name">${shortenSetName(set_name)}</div>
@@ -57,18 +58,6 @@ for(const print of sortedPrints) {
   }
 }
 
-const text = `
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <link rel="stylesheet" href="index.css" />
-  <link rel="icon" type="image/png" href="favicon.png" />
-  <title>Forests</title>
-</head>
-<body>
-  <div class="prints">
-${htmls.join("\n")}
-  </div>
-</body>
-</html>`
+const layout = await Deno.readTextFile("layout.html");
+const text = layout.replace("##__INSERT_PRINTS__HERE__##", htmls.join(""))
 await Deno.writeTextFile("forests.html", text);

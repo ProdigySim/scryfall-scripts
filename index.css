@@ -2,6 +2,9 @@
   .print {
     border: 1px solid black;
   }
+  .print.collected {
+    background-color: rgba(30,160,10, 0.5);
+  }
 }
 .prints {
   display: grid;
@@ -19,6 +22,28 @@
   border-radius: 8px;
 }
 
+.controls {
+  border: 1px dotted black;
+  width: 600px;
+  margin: 10px auto;
+  display: flex;
+  justify-content: center;
+  padding: 12px;
+}
+
+button {
+  border: 1px solid black;
+  color: white;
+  padding: 12px;
+  border-radius: 0;
+  background-color: rgba(10, 20, 200, 0.7);
+  margin: 0 8px;
+}
+
+button.activated {
+  background-color: rgba(100, 20, 180, 0.7);
+}
+
 @media print {
 
   .print {
@@ -28,5 +53,11 @@
   .prints {
     grid-template-columns: 33% 33% 33%;
     width: 100%;
+  }
+  .print.collected {
+    display: none;
+  }
+  .controls {
+    display: none;
   }
 }
