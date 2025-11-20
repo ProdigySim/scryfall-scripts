@@ -40,6 +40,10 @@ for await ( const print of fetchPrints("!\"Snow-Covered Forest\" include:extras 
   prints.push(print);
 }
 console.log("Received:", prints.length);
+for await ( const print of fetchPrints("!\"Forest\" include:extras s:9ed l:ru -layout:art_series  game:paper")) {
+  prints.push(print);
+}
+console.log("Received:", prints.length);
 
 
 await Deno.writeTextFile("forests.json", JSON.stringify(prints.map(({prices: _prices, ...rest}) => rest), undefined, 2));
