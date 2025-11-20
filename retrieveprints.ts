@@ -1,4 +1,5 @@
 import { Cards, Card } from "npm:scryfall-api";
+import { pick } from "jsr:@es-toolkit/es-toolkit";
 
 
 
@@ -46,4 +47,44 @@ for await ( const print of fetchPrints("!\"Forest\" include:extras s:9ed l:ru -l
 console.log("Received:", prints.length);
 
 
-await Deno.writeTextFile("forests.json", JSON.stringify(prints.map(({prices: _prices, ...rest}) => rest), undefined, 2));
+function removeIrrelevantFields(c: Card) {
+  return pick(c, [
+    'object',
+    'id',
+    'oracle_id',
+    'name',
+    'printed_name',
+    'lang',
+    'released_at',
+    'uri',
+    'scryfall_uri',
+    'layout',
+    'highres_image',
+    'image_status',
+    'image_uris',
+    'keywords',
+    'games',
+    'mtgo_foil_id',
+    'finishes',
+    'oversized',
+    'promo',
+    'reprint',
+    'variation',
+    'set_id',
+    'set',
+    'set_name',
+    'set_type',
+    'collector_number',
+    'digital',
+    'artist',
+    'artist_ids',
+    'illustration_id',
+    'border_color',
+    'frame',
+    'full_art',
+    'booster',
+    'story_spotlight',
+    'promo_types',
+  ]);
+}
+await Deno.writeTextFile("forests.json", JSON.stringify(prints.map(removeIrrelevantFields), undefined, 2));
