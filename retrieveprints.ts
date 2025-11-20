@@ -42,6 +42,8 @@ for await ( const print of fetchPrints("!\"Snow-Covered Forest\" include:extras 
 }
 console.log("Received:", prints.length);
 for await ( const print of fetchPrints("!\"Forest\" include:extras s:9ed l:ru -layout:art_series  game:paper")) {
+  // We only care about nonfoil finish of 9ed fbb
+  print.finishes = ['nonfoil'];
   prints.push(print);
 }
 console.log("Received:", prints.length);
