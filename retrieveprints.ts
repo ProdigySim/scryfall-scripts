@@ -1,5 +1,6 @@
 import { Cards, Card } from "npm:scryfall-api";
 import { pick } from "jsr:@es-toolkit/es-toolkit";
+import { getSetSections } from "./getSetData.ts";
 
 
 
@@ -48,9 +49,15 @@ for await ( const print of fetchPrints("!\"Forest\" include:extras s:9ed l:ru -l
 }
 console.log("Received:", prints.length);
 
+console.log("Fetching SLD drop names...");
+const sldSections = await getSetSections("sld");
+console.log("Received:", sldSections.length);
 
-function removeIrrelevantFields(c: Card) {
+function augmentCard(c: Card) {
   const card_faces = c.card_faces?.map(f => pick(f, ['image_uris']))
+  const sld_drop_name = c.set === 'sld'
+    ? sldSections.find(s => s.matches('sld', parseInt(c.collector_number, 10)))?.title
+    : undefined;
   return {
     ...pick(c, [
       'object',
@@ -91,6 +98,7 @@ function removeIrrelevantFields(c: Card) {
       'promo_types',
     ]),
     card_faces,
+    sld_drop_name,
   };
 }
-await Deno.writeTextFile("forests.json", JSON.stringify(prints.map(removeIrrelevantFields), undefined, 2));
+await Deno.writeTextFile("forests.json", JSON.stringify(prints.map(augmentCard), undefined, 2));
