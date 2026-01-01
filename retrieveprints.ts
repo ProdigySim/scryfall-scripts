@@ -71,7 +71,7 @@ function augmentCard(c: Card) {
     ? sldSections.find(s => s.matches('sld', parseInt(c.collector_number, 10)))?.title
     : undefined;
 
-  const signer = wcMap.get(c.set)?.get(c.collector_number.replace(/\d+/g, ''));
+  const signer = wcMap.get(c.set)?.get(c.collector_number.replace(/\d+.+/g, ''));
   return {
     ...pick(c, [
       'object',
