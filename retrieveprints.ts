@@ -1,6 +1,6 @@
 import { Cards, Card } from "npm:scryfall-api";
 import { pick } from "jsr:@es-toolkit/es-toolkit";
-import { getSetSections } from "./getSetData.ts";
+import { getSetSections, getWcSetData } from "./getSetData.ts";
 
 
 
@@ -53,11 +53,25 @@ console.log("Fetching SLD drop names...");
 const sldSections = await getSetSections("sld");
 console.log("Received:", sldSections.length);
 
+const wcSets = new Set(prints.filter(c => c.border_color === 'gold').map( x=> x.set));
+console.log("Fetching WC Deck owners...");
+const wcSections = await Promise.all(Array.from(wcSets).map((set) => getWcSetData(set)));
+console.log("Received")
+
+const wcMap = new Map<string, Map<string, string>>(
+  wcSections.map((playerCodes) => {
+    const set = playerCodes[0].set;
+    return [set, new Map(playerCodes.map(({id, name}) => ([id, name]as const)))] as const;
+  })
+);
+
 function augmentCard(c: Card) {
   const card_faces = c.card_faces?.map(f => pick(f, ['image_uris']))
   const sld_drop_name = c.set === 'sld'
     ? sldSections.find(s => s.matches('sld', parseInt(c.collector_number, 10)))?.title
     : undefined;
+
+  const signer = wcMap.get(c.set)?.get(c.collector_number.replace(/\d+/g, ''));
   return {
     ...pick(c, [
       'object',
@@ -99,6 +113,7 @@ function augmentCard(c: Card) {
     ]),
     card_faces,
     sld_drop_name,
+    signer,
   };
 }
 await Deno.writeTextFile("forests.json", JSON.stringify(prints.map(augmentCard), undefined, 2));

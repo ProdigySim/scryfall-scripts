@@ -70,10 +70,39 @@ function parseSectionQuery(query: string) {
   }
 }
 
+export async function getWcSetData(set: string) {
+  const res = await fetch(`https://scryfall.com/sets/${set}?as=grid&order=set`);
+  const html = await res.text();
+  const doc = new DOMParser().parseFromString(html, "text/html");
+  
+  return Array.from(
+    doc.querySelectorAll(".card-grid-header-content")
+  ).map((h, idx) => { 
+    const name = Array.from(h.childNodes)
+      .find(n => n.nodeType === Node.TEXT_NODE && !!n.textContent.trim())
+      ?.textContent.trim();
+    if(!name) {
+      throw new Error(`Couldn't find title for section "${idx}"`);
+    }
+    const id = h.querySelector('a')?.getAttribute("id");
+
+    if(!id) {
+      throw new Error(`Couldn't find id for "${name}"`);
+    }
+    return {
+      set,
+      id,
+      name,
+    };
+  });
+}
+
 
 if(import.meta.main) {
   const sections = await getSetSections("sld");
   console.log(sections);
   await Deno.writeTextFile("sld.json", JSON.stringify(sections, undefined, 2));
   console.log(sections.find(s => s.matches("sld", 1949)))
+
+  console.log(await getWcSetData('wc98'));
 }
